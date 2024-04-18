@@ -2,7 +2,11 @@ fn main() {
     let src_dir = std::path::Path::new("src");
 
     let mut c_config = cc::Build::new();
-    c_config.flag("-Wno-unused-but-set-variable").flag("-Wno-unused-value").flag("-Wno-implicit-fallthrough");
+    if cfg!(target_env = "msvc") {
+        c_config.flag("/wd4100");
+    } else {
+        c_config.flag("-Wno-unused-but-set-variable").flag("-Wno-unused-value").flag("-Wno-implicit-fallthrough");
+    }
     c_config.std("c11").include(src_dir);
 
     let parser_path = src_dir.join("parser.c");
